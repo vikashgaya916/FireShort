@@ -182,13 +182,27 @@ class Admin extends Component {
 
   handleDeleteShortUrl = (curl) => {
     const self = this;
-    db.collection('shorturls')
-      .doc(curl)
-      .delete()
-      .then(function () {
-        self.updateUrls();
-      });
-  };
+
+    confirmAlert({
+      title: 'Confirm Deletion',
+      message: 'Are you sure you want to delete this URL?',
+      buttons: [
+        {
+          label: 'Delete',
+          onClick: () => {
+            db.collection('shorturls').doc(curl).delete().then(function () {
+              self.updateUrls();
+            });
+          }
+        },
+        {
+          label: 'Back',
+          onClick: () => { return; }
+        }
+      ]
+    });
+  }
+
 
   handleEditShortUrl = (curl) => {
     this.setState({ backdrop: true });
@@ -397,6 +411,7 @@ class Admin extends Component {
                   handleDeleteShortUrl={this.handleDeleteShortUrl}
                   openHits={this.getHits}
                 // updateHits={this.updateUrls}
+                  toggleSecurity={this.toggleSecurity}
                 />
               ) : (
                   <ListUrls
